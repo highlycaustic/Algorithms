@@ -6,17 +6,21 @@ import Arrays
 
 class TestArrays(unittest.TestCase):
     def test_random_list(self):
-        test_arr = Arrays.random_list(0, 10, 10)   # Тестовый массив
-        self.assertIsNotNone(test_arr)                            # Проверка на создание массива
-        self.assertTrue(test_arr)                                 # Массив не пустой
-        self.assertTrue(any(x in range(11) for x in test_arr))    # В массиве есть хотя бы одно сгенерированное значение
+        low = 0                                                            # Нижний предел случайной генерации
+        high = 10                                                          # Верхний предел
+        test_arr = Arrays.random_list(low, high, 10)                  # Тестовый массив
+        self.assertIsNotNone(test_arr)                                     # Проверка на создание массива
+        self.assertTrue(test_arr)                                          # Массив не пустой
+        self.assertTrue(any(x in range(low, high + 1) for x in test_arr))  # В массиве есть хотя бы одно сгенерированное значение
 
     def test_mono_raising_list(self):
-        test_arr = Arrays.mono_raising_list(1, 10, 10)  # Тестовый массив
-        self.assertIsNotNone(test_arr)                                 # Проверка на создание массива
-        self.assertTrue(test_arr)                                      # Массив не пустой
-        self.assertTrue(any(x in range(11) for x in test_arr))         # В массиве есть хотя бы одно сгенерированное значение
-        self.assertTrue(test_arr[0] < test_arr[-1])                    # Последний элемент больше первого
+        low = 1                                                            # Нижний предел случайной генерации
+        high = 5                                                           # Верхний предел
+        test_arr = Arrays.mono_raising_list(low, high, 10)            # Тестовый массив
+        self.assertIsNotNone(test_arr)                                     # Проверка на создание массива
+        self.assertTrue(test_arr)                                          # Массив не пустой
+        self.assertTrue(any(x in range(low, high + 1) for x in test_arr))  # В массиве есть хотя бы одно сгенерированное значение
+        self.assertTrue(test_arr[0] < test_arr[-1])                        # Последний элемент больше первого
 
     def test_is_sorted(self):
         test_arr = [0,1,2,3,4,5]                        # Тестовый массив
