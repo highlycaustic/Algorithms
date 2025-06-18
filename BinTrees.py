@@ -10,27 +10,6 @@ class TreeNode:
         self.left  = left
         self.right = right
 
-def insert_node(node: TreeNode, value):
-    """
-    Вставка узла в дерево
-    :param node: корневой узел дерева, в которое нужно вставить занчение
-    :param value: значение для вставки
-    :return: None
-    """
-    if node.data == value:
-        print(f"Встречен дубликат ({value}), значение не вставлено")
-    else:
-        if node.data > value:
-            if node.left is not None:
-                insert_node(node.left, value)
-            else:
-                node.left = TreeNode(value)
-        else:
-            if node.right is not None:
-                insert_node(node.right, value)
-            else:
-                node.right = TreeNode(value)
-
 def tree_depth(node: TreeNode):
     """
     Рекурсивно считает глубину дерева в уровнях
@@ -88,6 +67,27 @@ def get_successor(node: TreeNode):
     while curr_node is not None and curr_node.left is not None:
         curr_node = curr_node.left
     return curr_node
+
+def insert_node(node, value):
+    """
+    Вставка узла в дерево
+    :param node: корневой узел дерева, в которое нужно вставить занчение
+    :param value: значение для вставки
+    :return: None
+    """
+    if node.data == value:
+        print(f"Встречен дубликат ({value}), значение не вставлено")
+    else:
+        if node.data > value:
+            if node.left is not None:
+                insert_node(node.left, value)
+            else:
+                node.left = TreeNode(value)
+        else:
+            if node.right is not None:
+                insert_node(node.right, value)
+            else:
+                node.right = TreeNode(value)
 
 def remove_node(node: TreeNode, value):
     """
@@ -174,11 +174,44 @@ def populate_nodes(node: TreeNode, size, min, max):
         insert_node(node, randint(min, max))
 
 
-class BinSTreeIterator:
+class BinSTreeIteratorBFS:
+    """
+    Итератор обхода в ширину (Breadth First Search)
+    """
+    def __init__(self, node):
+        """
+        Конструктор
+        :param node: Корневой узел
+        """
+        if node is not None:
+            self.queue = []                     # очередь обхода
+            self.curr_level = 0                 # начальный уровень
+            self.tree_level = tree_depth(node)  # конечный уровень обхода
+            self.queue.append(node)             # загружаем корневой узел в очередь
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        """
+        Операция перехода к следующему элементу
+        :return: TreeNode текущего узла
+        """
+        if self.queue:
+            self.curr_node = self.queue.pop(0)              # Забираем узел из очереди
+            if self.curr_node.left is not None:             # Добавляем потомков в очередь, если есть
+                self.queue.append(self.curr_node.left)
+            if self.curr_node.right is not None:
+                self.queue.append(self.curr_node.right)
+            if self.curr_level <= self.tree_level:          # Если дошли до последнего уровня, возвращаем узел
+                return self.curr_node
+        raise StopIteration
+
+class BinSTreeIteratorDFS:
     """
     Класс-итератор для бинарных деревьев
     """
-    def __init__(self, node: TreeNode):
+    def __init__(self, node):
         """
         Конструктор
         :param node: Корневой узел дерева
@@ -205,7 +238,7 @@ class BinSTree:
     """
     Класс бинарного дерева
     """
-    def __init__(self, root_node: TreeNode = None):
+    def __init__(self, root_node = None):
         """
         Конструктор
         :param root_node: Корневой узел дерева
@@ -217,7 +250,7 @@ class BinSTree:
         Итератор
         :return: Объект итератора BinSTreeIterator
         """
-        return BinSTreeIterator(self.root)
+        return BinSTreeIteratorBFS(self.root)
 
     def print_tree(self, level = 0):
         """
@@ -261,12 +294,9 @@ class BinSTree:
         """
         Поиск в дереве
         :param value: Значение, которое нужно найти
-        :return: None
+        :return: TreeNode найденного узла, или None, если не найдено
         """
-        if search(self.root, value):
-            print("Значение присутствует в дереве")
-        else:
-            print("Значение не найдено")
+        return search(self.root, value)
 
     def delete(self):
         """
