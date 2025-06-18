@@ -105,7 +105,8 @@ def partition(array, low, high):
     :param high: Верхняя граница
     :return:
     """
-    pivot = array[randint(low,high)]
+    # pivot = array[randint(low,high)]
+    pivot = array[high]
 
     i = low - 1
 
